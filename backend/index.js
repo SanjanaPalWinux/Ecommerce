@@ -33,9 +33,17 @@ const userSchema = mongoose.Schema({
   profile: String,
 });
 
-//model
+const productSchema = mongoose.Schema({
+  name: String,
+  category: String,
+  image: String,
+  price: String,
+  description: String,
+});
 
+//model
 const userModel = mongoose.model("user", userSchema);
+const productModel = mongoose.model("product", productSchema);
 
 app.get("/", (req, res) => {
   res.send("Running");
@@ -47,7 +55,6 @@ app.post("/signup", async (req, res) => {
   const { email } = req.body;
   try {
     const result = await userModel.findOne({ email: email });
-    console.log("Result:", result);
     if (result) {
       res.send({ message: "Eamil id already present", alert: false });
     } else {
@@ -87,6 +94,22 @@ app.post("/login", async (req, res) => {
   } catch (error) {
     console.error("Error:", error);
   }
+});
+
+// newproduct
+
+app.post("/upload-product", async (req, res) => {
+  const result = await productModel(req.body);
+  result.save();
+
+  res.send({ message: "New product added successfully", data: req.body });
+});
+
+//product
+
+app.get("/product", async (Req, res) => {
+  const data = await productModel.find({});
+  res.send(JSON.stringify(data));
 });
 
 // Start the server
